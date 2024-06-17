@@ -134,7 +134,7 @@ function endGame() {
   const photoTimeSeconds = Math.floor(photoTime / 1000);
 
   let resultText;
-  if (testTimeSeconds < 30 && photoTimeSeconds < 6) {
+  if (testTimeSeconds < 27 && photoTimeSeconds < 6) {
     resultText =
       '<span style="color: green; font-weight: bold;">успішно</span>';
   } else {
