@@ -142,7 +142,7 @@ function endGame() {
       '<span style="color: red; font-weight: bold;">не пройдено</span>';
   }
 
-  resultElement.innerHTML = `<p>Результат тесту: ${timerElement.textContent}</p> <p>Час на фото: ${photoTimeSeconds} сек</p> <p>${resultText}</p> <img src="${photoData}" alt="Фото" width="300">`;
+  resultElement.innerHTML = `<p>Результат тесту: ${timerElement.textContent}</p> <p>Час на фото: ${photoTimeSeconds} сек</p> <p>${resultText}</p> <img src="${photoData}" alt="Фото"  style ="max-height:200px">`;
 }
 
 function calculateTimeInSeconds(timerText) {
