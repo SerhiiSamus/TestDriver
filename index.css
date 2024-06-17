@@ -60,6 +60,7 @@ html {
   justify-content: center;
   font-size: 30px;
   flex-direction: column;
+  text-align: center;
 }
 #photo-modal {
   display: none;
