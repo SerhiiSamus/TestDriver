@@ -11,6 +11,7 @@ let currentNumber = 30;
 let startTime;
 let timerInterval;
 let activeCircles = [];
+let pausedTime = 0; // Час паузи в мілісекундах
 let photoStartTime;
 let photoEndTime;
 let photoTime;
@@ -21,10 +22,9 @@ let randomPhotoNumber;
 function startGame() {
   startButton.style.display = 'none';
   gameArea.style.display = 'block';
-  // timerElement.style.display = 'block';
-  currentNumber = 30;
+  currentNumber = 20;
   randomPhotoNumber = getRandomNumber(10, 20);
-  startTime = new Date();
+  startTime = new Date().getTime(); // Початковий час в мілісекундах
   timerInterval = setInterval(updateTimer, 100);
   createInitialCircles();
 }
@@ -34,8 +34,8 @@ function getRandomNumber(min, max) {
 }
 
 function updateTimer() {
-  const now = new Date();
-  const elapsedTime = now - startTime;
+  const now = new Date().getTime(); // Поточний час в мілісекундах
+  const elapsedTime = now - startTime - pausedTime;
   const minutes = String(Math.floor(elapsedTime / 60000)).padStart(2, '0');
   const seconds = String(Math.floor((elapsedTime % 60000) / 1000)).padStart(
     2,
@@ -88,7 +88,7 @@ function continueGameAfterPhoto(circle, number) {
 
 function pauseGameForPhoto() {
   clearInterval(timerInterval);
-  photoStartTime = new Date();
+  photoStartTime = new Date().getTime(); // Початковий час фотографування в мілісекундах
   photoModal.style.display = 'flex';
   navigator.mediaDevices
     .getUserMedia({ video: true })
@@ -102,7 +102,6 @@ function pauseGameForPhoto() {
       alert(
         'Не вдалося отримати доступ до камери. Перевірте дозволи та спробуйте ще раз.'
       );
-      resumeGameAfterPhotoError();
     });
 }
 
@@ -110,24 +109,20 @@ captureButton.addEventListener('click', () => {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   canvas.getContext('2d').drawImage(video, 0, 0);
+  photoEndTime = new Date().getTime(); // Час завершення фотографування в мілісекундах
+  photoTime = photoEndTime - photoStartTime; // Час на фото в мілісекундах
   photoData = canvas.toDataURL('image/png');
-  photoEndTime = new Date();
-  photoTime = photoEndTime - photoStartTime;
   photoModal.style.display = 'none';
   if (videoStream) {
     videoStream.getTracks().forEach((track) => track.stop());
   }
+  pausedTime += photoTime; // Додаємо час фото до часу паузи
   timerInterval = setInterval(updateTimer, 100);
   const remainingCircle = activeCircles.find(
     (c) => c.textContent == currentNumber
   );
   continueGameAfterPhoto(remainingCircle, currentNumber);
 });
-
-function resumeGameAfterPhotoError() {
-  photoModal.style.display = 'none';
-  timerInterval = setInterval(updateTimer, 100);
-}
 
 function endGame() {
   clearInterval(timerInterval);
@@ -146,13 +141,8 @@ function endGame() {
     resultText =
       '<span style="color: red; font-weight: bold;">не пройдено</span>';
   }
-  console.log(testTimeSeconds, photoTimeSeconds);
-  resultElement.innerHTML = `
-        <p>Результат тесту: ${timerElement.textContent}</p>
-        <p>Час на фото: ${photoTimeSeconds} сек</p>
-        <p>${resultText}</p>
-        <img src="${photoData}" alt="Фото" width="300">
-    `;
+
+  resultElement.innerHTML = `<p>Результат тесту: ${timerElement.textContent}</p> <p>Час на фото: ${photoTimeSeconds} сек</p> <p>${resultText}</p> <img src="${photoData}" alt="Фото" width="300">`;
 }
 
 function calculateTimeInSeconds(timerText) {
