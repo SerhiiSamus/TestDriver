@@ -57,7 +57,7 @@ function createCircle(number) {
   circle.textContent = number;
   circle.style.top = `${Math.random() * 70}vh`;
   circle.style.left = `${Math.random() * 75}vw`;
-  circle.style.zIndex = number; // Set z-index to the circle's number
+  circle.style.zIndex = number;
   circle.addEventListener('click', () => handleCircleClick(circle, number));
   gameArea.appendChild(circle);
   activeCircles.push(circle);
@@ -90,19 +90,21 @@ function pauseGameForPhoto() {
   clearInterval(timerInterval);
   photoStartTime = new Date().getTime(); // Початковий час фотографування в мілісекундах
   photoModal.style.display = 'flex';
-  navigator.mediaDevices
-    .getUserMedia({ video: true })
-    .then((stream) => {
-      video.srcObject = stream;
-      videoStream = stream;
-      video.play();
-    })
-    .catch((error) => {
-      console.error('Error accessing media devices.', error);
-      alert(
-        'Не вдалося отримати доступ до камери. Перевірте дозволи та спробуйте ще раз.'
-      );
-    });
+  // navigator.mediaDevices
+  //   .getUserMedia({ video: true })
+  //   .then((stream) => {
+  //     video.srcObject = stream;
+  //     videoStream = stream;
+  //     video.play();
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error accessing media devices.', error);
+  //     alert(
+  //       'Не вдалося отримати доступ до камери. Перевірте дозволи та спробуйте ще раз.'
+  //     );
+  //   });
+  video.srcObject = videoStream; // Використовуємо вже отриманий стрім
+  video.play();
 }
 
 captureButton.addEventListener('click', () => {
@@ -151,3 +153,16 @@ function calculateTimeInSeconds(timerText) {
 }
 
 startButton.addEventListener('click', startGame);
+window.addEventListener('load', () => {
+  navigator.mediaDevices
+    .getUserMedia({ video: true })
+    .then((stream) => {
+      videoStream = stream;
+    })
+    .catch((error) => {
+      console.error('Error accessing media devices.', error);
+      alert(
+        'Не вдалося отримати доступ до камери. Перевірте дозволи та спробуйте ще раз.'
+      );
+    });
+});
