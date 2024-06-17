@@ -46,7 +46,7 @@ function updateTimer() {
 }
 
 function createInitialCircles() {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i++) {
     createCircle(currentNumber - i);
   }
 }
@@ -78,8 +78,8 @@ function continueGameAfterPhoto(circle, number) {
   activeCircles = activeCircles.filter((c) => c !== circle);
   currentNumber--;
   if (currentNumber > 0) {
-    if (currentNumber >= 3) {
-      createCircle(currentNumber - 2);
+    if (currentNumber >= 5) {
+      createCircle(currentNumber - 4);
     }
   } else {
     endGame();
