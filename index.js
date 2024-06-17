@@ -22,7 +22,7 @@ let randomPhotoNumber;
 function startGame() {
   startButton.style.display = 'none';
   gameArea.style.display = 'block';
-  currentNumber = 20;
+  currentNumber = 30;
   randomPhotoNumber = getRandomNumber(10, 20);
   startTime = new Date().getTime(); // Початковий час в мілісекундах
   timerInterval = setInterval(updateTimer, 100);
