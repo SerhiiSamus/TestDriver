@@ -78,7 +78,7 @@ function continueGameAfterPhoto(circle, number) {
   activeCircles = activeCircles.filter((c) => c !== circle);
   currentNumber--;
   if (currentNumber > 0) {
-    if (currentNumber >= 2) {
+    if (currentNumber >= 3) {
       createCircle(currentNumber - 2);
     }
   } else {
@@ -134,11 +134,30 @@ function endGame() {
   gameArea.style.display = 'none';
   timerElement.style.display = 'none';
   resultElement.style.display = 'flex';
+
+  const testTimeSeconds = calculateTimeInSeconds(timerElement.textContent);
+  const photoTimeSeconds = Math.floor(photoTime / 1000);
+
+  let resultText;
+  if (testTimeSeconds < 30 && photoTimeSeconds < 6) {
+    resultText =
+      '<span style="color: green; font-weight: bold;">успішно</span>';
+  } else {
+    resultText =
+      '<span style="color: red; font-weight: bold;">не пройдено</span>';
+  }
+  console.log(testTimeSeconds, photoTimeSeconds);
   resultElement.innerHTML = `
         <p>Результат тесту: ${timerElement.textContent}</p>
-        <p>Час на фото: ${Math.floor(photoTime / 1000)} сек</p>
+        <p>Час на фото: ${photoTimeSeconds} сек</p>
+        <p>${resultText}</p>
         <img src="${photoData}" alt="Фото" width="300">
     `;
+}
+
+function calculateTimeInSeconds(timerText) {
+  const [minutes, seconds, miliseconds] = timerText.split(':').map(Number);
+  return minutes * 60 + seconds;
 }
 
 startButton.addEventListener('click', startGame);
