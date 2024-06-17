@@ -55,8 +55,8 @@ function createCircle(number) {
   const circle = document.createElement('div');
   circle.className = 'circle';
   circle.textContent = number;
-  circle.style.top = `${Math.random() * 80}vh`;
-  circle.style.left = `${Math.random() * 80}vw`;
+  circle.style.top = `${Math.random() * 70}vh`;
+  circle.style.left = `${Math.random() * 75}vw`;
   circle.style.zIndex = number; // Set z-index to the circle's number
   circle.addEventListener('click', () => handleCircleClick(circle, number));
   gameArea.appendChild(circle);
