@@ -6,7 +6,6 @@ const photoModal = document.getElementById('photo-modal');
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const captureButton = document.getElementById('capture-button');
-const saveButton = document.getElementById('save-button');
 
 let currentNumber = 30;
 let startTime;
@@ -22,7 +21,7 @@ let randomPhotoNumber;
 function startGame() {
   startButton.style.display = 'none';
   gameArea.style.display = 'block';
-  timerElement.style.display = 'block';
+  // timerElement.style.display = 'block';
   currentNumber = 30;
   randomPhotoNumber = getRandomNumber(10, 20);
   startTime = new Date();
@@ -57,7 +56,7 @@ function createCircle(number) {
   circle.className = 'circle';
   circle.textContent = number;
   circle.style.top = `${Math.random() * 80}vh`;
-  circle.style.left = `${Math.random() * 85}vw`;
+  circle.style.left = `${Math.random() * 80}vw`;
   circle.style.zIndex = number; // Set z-index to the circle's number
   circle.addEventListener('click', () => handleCircleClick(circle, number));
   gameArea.appendChild(circle);
@@ -100,6 +99,10 @@ function pauseGameForPhoto() {
     })
     .catch((error) => {
       console.error('Error accessing media devices.', error);
+      alert(
+        'Не вдалося отримати доступ до камери. Перевірте дозволи та спробуйте ще раз.'
+      );
+      resumeGameAfterPhotoError();
     });
 }
 
@@ -108,20 +111,23 @@ captureButton.addEventListener('click', () => {
   canvas.height = video.videoHeight;
   canvas.getContext('2d').drawImage(video, 0, 0);
   photoData = canvas.toDataURL('image/png');
-  saveButton.style.display = 'block';
-});
-
-saveButton.addEventListener('click', () => {
   photoEndTime = new Date();
   photoTime = photoEndTime - photoStartTime;
   photoModal.style.display = 'none';
-  videoStream.getTracks().forEach((track) => track.stop());
+  if (videoStream) {
+    videoStream.getTracks().forEach((track) => track.stop());
+  }
   timerInterval = setInterval(updateTimer, 100);
   const remainingCircle = activeCircles.find(
     (c) => c.textContent == currentNumber
   );
   continueGameAfterPhoto(remainingCircle, currentNumber);
 });
+
+function resumeGameAfterPhotoError() {
+  photoModal.style.display = 'none';
+  timerInterval = setInterval(updateTimer, 100);
+}
 
 function endGame() {
   clearInterval(timerInterval);
